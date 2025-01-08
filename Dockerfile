@@ -1,18 +1,15 @@
-# Use an official Maven image to build the app
-FROM maven:3.8.1-openjdk-11 as build
+# Use an official openjdk as the base image
+FROM openjdk:8-jdk-alpine
 
+# Set the working directory inside the container
 WORKDIR /app
-COPY . .
-RUN mvn clean install -DskipTests
 
-# Now, use an OpenJDK base image to run the app
-FROM openjdk:11-jre-slim
+# Copy the JAR file into the container
+COPY target/springboothello-0.0.1-SNAPSHOT.jar app.jar
 
-WORKDIR /app
-COPY --from=build /app/target/spring-boot-hello-world-0.0.1-SNAPSHOT.jar app.jar
+# Expose the port that your Spring Boot app runs on
+EXPOSE 8080
 
-# Run the application
+# Run the JAR file
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
-# Expose the port that Spring Boot listens to
-EXPOSE 8080
